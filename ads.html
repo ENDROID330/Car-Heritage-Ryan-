@@ -3,6 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Car Ads</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    #adsList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .ad-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      transition: transform 0.2s ease;
+    }
+    .ad-card:hover {
+      transform: translateY(-5px);
+    }
+    .ad-card h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+    .ad-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .ad-card img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #28a745;
+    }
+  </style>
 </head>
 <body>
   <h2>Car Ads</h2>
@@ -14,12 +60,12 @@
 
     ads.forEach(ad => {
       const adDiv = document.createElement('div');
+      adDiv.classList.add('ad-card');
       adDiv.innerHTML = `
         <h3>${ad.title}</h3>
-        <p><strong>Price:</strong> $${ad.price}</p>
+        <p class="price">$${ad.price}</p>
         <p>${ad.description}</p>
-        <img src="${ad.image}" alt="Car Image" style="max-width:300px;">
-        <hr>
+        <img src="${ad.image}" alt="Car Image">
       `;
       adsList.appendChild(adDiv);
     });
