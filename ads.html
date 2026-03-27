@@ -48,6 +48,10 @@
       font-weight: bold;
       color: #28a745;
     }
+    .uploader {
+      font-size: 0.9em;
+      color: #666;
+    }
     .actions {
       margin-top: 10px;
     }
@@ -76,6 +80,9 @@
     const adsList = document.getElementById('adsList');
     let ads = JSON.parse(localStorage.getItem('carAds')) || [];
 
+    // Simulate current logged-in user Gmail
+    const currentUserEmail = "user@gmail.com"; // Replace with actual login system
+
     function renderAds() {
       adsList.innerHTML = "";
       ads.forEach((ad, index) => {
@@ -86,9 +93,12 @@
           <p class="price">$${ad.price}</p>
           <p>${ad.description}</p>
           <img src="${ad.image}" alt="Car Image">
+          <p class="uploader">Uploaded by: ${ad.uploader}</p>
           <div class="actions">
-            <button class="edit-btn" onclick="editAd(${index})">Edit</button>
-            <button class="delete-btn" onclick="deleteAd(${index})">Delete</button>
+            ${ad.uploader === currentUserEmail ? `
+              <button class="edit-btn" onclick="editAd(${index})">Edit</button>
+              <button class="delete-btn" onclick="deleteAd(${index})">Delete</button>
+            ` : `<em>You cannot edit/delete this ad</em>`}
           </div>
         `;
         adsList.appendChild(adDiv);
@@ -96,27 +106,36 @@
     }
 
     function deleteAd(index) {
-      ads.splice(index, 1);
-      localStorage.setItem('carAds', JSON.stringify(ads));
-      renderAds();
+      if (ads[index].uploader === currentUserEmail) {
+        ads.splice(index, 1);
+        localStorage.setItem('carAds', JSON.stringify(ads));
+        renderAds();
+      } else {
+        alert("You can only delete your own ads.");
+      }
     }
 
     function editAd(index) {
-      const ad = ads[index];
-      const newTitle = prompt("Edit Title:", ad.title);
-      const newPrice = prompt("Edit Price:", ad.price);
-      const newDescription = prompt("Edit Description:", ad.description);
-      const newImage = prompt("Edit Image URL:", ad.image);
+      if (ads[index].uploader === currentUserEmail) {
+        const ad = ads[index];
+        const newTitle = prompt("Edit Title:", ad.title);
+        const newPrice = prompt("Edit Price:", ad.price);
+        const newDescription = prompt("Edit Description:", ad.description);
+        const newImage = prompt("Edit Image URL:", ad.image);
 
-      if (newTitle && newPrice && newDescription && newImage) {
-        ads[index] = {
-          title: newTitle,
-          price: newPrice,
-          description: newDescription,
-          image: newImage
-        };
-        localStorage.setItem('carAds', JSON.stringify(ads));
-        renderAds();
+        if (newTitle && newPrice && newDescription && newImage) {
+          ads[index] = {
+            title: newTitle,
+            price: newPrice,
+            description: newDescription,
+            image: newImage,
+            uploader: ad.uploader // keep uploader unchanged
+          };
+          localStorage.setItem('carAds', JSON.stringify(ads));
+          renderAds();
+        }
+      } else {
+        alert("You can only edit your own ads.");
       }
     }
 
